@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+[ -z "$1" ] && exit 1
+DEVICE=$1
+STATE=$(amixer -D pulse get "$DEVICE" | sed -n 's/^[^:]*: Playback [0-9]* \[[0-9]*%\] \[\(on\|off\)\].*/\1/p' | tail -n 1)
+VOL=$(amixer -D pulse get "$DEVICE" | sed -n 's/^[^:]*: Playback [0-9]* \[\([0-9]*%\)\].*/\1/p' | tail -n 1)
+
+if [ "$STATE" = "on" ]; then
+    echo " $VOL"
+else
+	echo " $VOL"
+	echo
+	echo "#576566"
+fi
+
+exit 0

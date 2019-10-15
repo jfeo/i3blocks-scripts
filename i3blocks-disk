@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+usage="usage: $(basename "$0") MOUNTPOINT -- i3blocks command to show space usage of the given mountpoint."
+
+[ -z "$1" ] && echo $usage >&2 && exit 1;
+
+MOUNTPOINT=$1;
+
+pct=$(df | awk -v MP="$MOUNTPOINT" '{if ($6==MP) {sub(/%/,""); print $5}}');
+free=$(df -h | awk -v MP="$MOUNTPOINT" '{if ($6==MP) {print $4}}');
+
+echo " $MOUNTPOINT $pct% ($free)";
+
+[[ $pct -lt 10 ]] && exit 33 || exit 0
+

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+[ -z "$1" ] && exit 1
+INTERFACE=$1
+
+ESSID=$(iwconfig "$INTERFACE" | sed -n 's/.*ESSID:"\(.*\)".*/\1/p')
+IWMAX=$(iwconfig "$INTERFACE" | sed -n 's/ *Link Quality=.*\/\([0-9]*\).*/\1/p')
+IWCUR=$(iwconfig "$INTERFACE" | sed -n 's/ *Link Quality=\([0-9]*\)\/.*/\1/p')
+
+[ -z "$ESSID" ] && exit 1
+
+IWPCT=$((IWCUR * 100 / IWMAX))
+
+echo " $ESSID $IWPCT%"
+[ "$IWPCT" -le 20 ] && exit 33
+
+exit 0

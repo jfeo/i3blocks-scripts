@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+BAT=$(acpi -b | grep -E -o '[0-9][0-9]?%')
+STATE=$(acpi | sed -n 's/Battery [0-9]: \([A-Z]\).*, .*/\1/p')
+
+[ "$STATE" = "C" ] && echo  " $BAT" && exit 0 || echo " $BAT"
+[ "${BAT%?}" -le 10 ] && exit 33
+[ "${BAT%?}" -le 20 ] && echo && echo "#FFAA00";
+
+exit 0
