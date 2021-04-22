@@ -1,10 +1,36 @@
 #!/usr/bin/env bash
 
-BAT=$(acpi -b | grep -E -o '[0-9][0-9]?%')
-STATE=$(acpi | sed -n 's/Battery [0-9]: \([A-Z]\).*, .*/\1/p')
+BAT=$(acpi -b | grep -E -o '[0-9][0-9]?[0-9]?%')
+STATE=$(acpi | sed -n 's/Battery [0-9]: \([A-Z][a-z]*\).*, .*/\1/p')
+ICON=""
 
-[ "$STATE" = "C" ] && echo  " $BAT" && exit 0 || echo " $BAT"
-[ "${BAT%?}" -le 10 ] && exit 33
-[ "${BAT%?}" -le 20 ] && echo && echo "#FFAA00";
+if [ "$BLOCK_BUTTON" = "1" ]; then
+    notify-send -i "battery" "$(acpi)"
+fi
+
+if [ "${BAT%?}" -le 15 ]; then
+	ICON=""
+elif [ "${BAT%?}" -le 40 ]; then
+    ICON=""
+elif [ "${BAT%?}" -le 60 ]; then
+    ICON=""
+elif [ "${BAT%?}" -le 85 ]; then
+    ICON=""
+else
+    ICON=""
+fi
+
+if [ "$STATE" = "Charging" ]; then
+  ICON=" $ICON"
+elif [ "$STATE" = "Unknown" ]; then
+  ICON=" $ICON"
+elif [ "$State" = "Full" ]; then
+  ICON=""
+fi
+
+echo "$ICON $BAT"
+
+[ "${BAT%?}" -le 10 ] && [ "$STATE" != "C" ] && exit 33
+[ "${BAT%?}" -le 30 ] && [ "$STATE" != "C" ] && echo && echo "#E69F66";
 
 exit 0

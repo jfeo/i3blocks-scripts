@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+STATUS=$(i3-msg -t get_tree | jq -r 'recurse(.nodes[]) | .window_properties.class | select (. == "i3bar")')
+
+echo " "; echo
+
+if [ -z "$STATUS" ]; then
+	i3-msg -q bar mode dock
+	echo "#F8F8F2"
+else
+	i3-msg -q bar mode hide
+	echo "#75715E"
+fi

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+updatecount=$(yay -Qua | wc -l)
+updates=$(yay -Qua | cut -d" " -f1)
+
+if [ "$BLOCK_BUTTON" = "3" ]; then
+    i3-msg -q exec "urxvt -name pacupdate -e sh -c \"yay && read -rsn1 -p 'Press any key to exit.'\""
+fi
+
+if [ "$BLOCK_BUTTON" = "1" ]; then
+    notify-send -i aptdaemon-upgrade "$updatecount AUR package updates" "$updates"
+fi
+
+echo " $updatecount"
+
+if [ "$updatecount" -gt 5 ]; then
+    exit 33;
+else
+	exit 0;
+fi
