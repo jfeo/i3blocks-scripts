@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
+if [ "$BLOCK_BUTTON" = "3" ]; then
+    i3-msg -q exec "gksudo -m \"Enter password to upgrade system packages\" -- alacritty --title pacupdate -e sh -c \"pacman -Syyu && read -rsn1 -p 'Done. Press any key to exit.' || read -rsn1 -p 'Error. Press any key to exit.'\""
+fi
+
+if [ "$BLOCK_BUTTON" = "1" ]; then
+    dunstify -t 60000 -r 15000 -i aptdaemon-upgrade "loading package updates" "..."
+fi
+
 updates=$(checkupdates | cut -d" " -f1)
-updatecount=$(checkupdates | wc -l)
+updatecount=$(echo "$updates" | wc -l)
 
 
 if [ "$BLOCK_BUTTON" = "1" ]; then
-    notify-send -i aptdaemon-upgrade "$updatecount package updates" "$updates"
-fi
-
-if [ "$BLOCK_BUTTON" = "3" ]; then
-    i3-msg -q exec "urxvt -name pacupdate -e sh -c \"sudo pacman -Syu && read -rsn1 -p 'Press any key to exit.'\""
+    dunstify -t 0 -r 15000 -i aptdaemon-upgrade "$updatecount package updates" "$updates"
 fi
 
 echo " $updatecount"
