@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
 BAT=$(acpi -b | grep -E -o '[0-9][0-9]?[0-9]?%')
+
+if [ -z "$BAT" ]; then
+	echo " No battery"
+	echo
+	echo "#75715E"
+	exit 0
+fi
+
 STATE=$(acpi | sed -n 's/Battery [0-9]: \([A-Z][a-z]*\).*, .*/\1/p')
 ICON=""
 
