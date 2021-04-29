@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+if [ ! -z "$BLOCK_BUTTON" ]; then
+    MONTH=$(cal | head -n1)
+
+    # get calendar days, and replace terminal colours with html markup
+    CALENDAR=$(cal --color=ALWAYS |  sed 's \x1b\x5c\x5b\x37\x6d <b><u> g; s \x1b\x5c\x5b\x32\x37\x6d </u></b> g' | tail -n+2)
+    dunstify -i calendar -r 12000 "$MONTH" "$CALENDAR"
+fi
+
+echo " $(date '+%H:%M, %A %e %B (week %U)')";
+exit 0
