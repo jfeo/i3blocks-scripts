@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
 [ -z "$1" ] && exit 1
+
 DEVICE=$1
+
+if [ "$BLOCK_BUTTON" = "1" ]; then
+	amixer -D pulse set "$DEVICE" toggle > /dev/null
+fi
+
 STATE=$(amixer -D pulse get "$DEVICE" | sed -n 's/^[^:]*: Playback [0-9]* \[[0-9]*%\] \[\(on\|off\)\].*/\1/p' | tail -n 1)
 VOL=$(amixer -D pulse get "$DEVICE" | sed -n 's/^[^:]*: Playback [0-9]* \[\([0-9]*%\)\].*/\1/p' | tail -n 1)
 
