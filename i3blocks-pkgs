@@ -1,25 +1,29 @@
 #!/usr/bin/env bash
 
+# Right click (open terminal with system upgrade)
 if [ "$BLOCK_BUTTON" = "3" ]; then
-    i3-msg -q exec "gksudo -m \"Enter password to upgrade system packages\" -- alacritty --title pacupdate -e sh -c \"pacman -Syyu && read -rsn1 -p 'Done. Press any key to exit.' || read -rsn1 -p 'Error. Press any key to exit.'\""
+    i3-msg -q exec "alacritty --title pacupdate -e sh -c \"yes | sudo pacman -Syyu && read -rsn1 -p 'Done. Press any key to exit.' || read -rsn1 -p 'Error. Press any key to exit.'\""
 fi
 
+# Left click (display loading message)
 if [ "$BLOCK_BUTTON" = "1" ]; then
     dunstify -t 60000 -r 15000 -i aptdaemon-upgrade "loading package updates" "..."
 fi
 
+# Get updated packages and count the amount
 updates=$(checkupdates | cut -d" " -f1)
 updatecount=$(echo "$updates" | wc -l)
 
-
+# Left click (display packages that can be updated)
 if [ "$BLOCK_BUTTON" = "1" ]; then
     dunstify -t 0 -r 15000 -i aptdaemon-upgrade "$updatecount package updates" "$updates"
 fi
 
+# Print the information for i3-blocks
 echo " $updatecount"
 
 if [ "$updatecount" -gt 40 ]; then
-    exit 33;
+    exit 33; # Signal urgency
 else
 	exit 0;
 fi
